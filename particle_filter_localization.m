@@ -105,7 +105,7 @@ for i=1 : nSteps
     xEst=px*pw';
     
     % Simulation Result
-    localizer.time=[localizer.time￼; time];
+    localizer.time=[localizer.time; time];
     localizer.xGnd=[localizer.xGnd; xGnd'];
     localizer.xOdom=[localizer.xOdom; xOdom'];
     localizer.xEst=[localizer.xEst;xEst'];
@@ -208,7 +208,7 @@ function [z, xGnd, xOdom, u] = doObservation(xGnd, xOdom, u, landMarks, MAX_RANG
     %Simulate Observation
     z=[];
     for iz=1:length(landMarks(:,1))
-        d = norm(x -z)
+        d = norm(iz -z)
 
         if d<MAX_RANGE 
             z=[z;[d+sqrt(Rsigma)*randn(1,1) landMarks(iz,:)]];   % add observation noise randomly
@@ -224,14 +224,14 @@ function [ x ] = doMotion( x, u)
     Delta = [ dt*cos(x(3)) 0
               dt*sin(x(3)) 0
               0 dt];
-  
-    x = identity*d + Delta 
+    Identity = eye(3)
+    x = Identity*x + Delta*u
       
 end
 
 %% Gauss function
 function g = Gaussian(x,u,sigma)
-    g= gaussmf(x,[sig u])
+    g= gaussmf(x,[sigma u])
 end
 
 %% Normalization 
@@ -244,6 +244,21 @@ end
 
 %% Resampling
 function [px,pw]=ResamplingStep(px,pw,NTh,NP)
-
+    N_eff= 1/(pw*pw');
+    if N_eff < NTh
+        ppx=px
+    for i=1:NP
+      u=rand;
+      pw_sum=0;
+      for j=1:NP
+          pw_sum = pw_sum + pw(j);
+          if pw_sum >= u
+              px(:,i) = ppx(:,j);
+              break;
+          end
+      end
+    end
+    pw = zeros(1,NP)+1/NP;
+    end
 end
 
