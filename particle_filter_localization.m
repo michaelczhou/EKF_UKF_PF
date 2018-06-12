@@ -35,9 +35,9 @@ localizer.z = [];
 localizer.PEst=[];
 localizer.u=[];
 
-% Estimated State [x y yaw]'估计值
+% Estimated State [x y yaw]'估�?��??
 xEst=[0 0 0]';
-% GroundTruth State真值
+% GroundTruth State????
 xGnd = xEst;
 % Odometry-only = Dead Reckoning  
 xOdom = xGnd;
@@ -208,7 +208,7 @@ function [z, xGnd, xOdom, u] = doObservation(xGnd, xOdom, u, landMarks, MAX_RANG
     %Simulate Observation
     z=[];
     for iz=1:length(landMarks(:,1))
-        d = norm( -landMarks(:,1) )
+        d = norm(xGnd(1:2)' - landMarks(iz,:));%d = norm( -landMarks(:,1) )
 
         if d<MAX_RANGE 
             z=[z;[d+sqrt(Rsigma)*randn(1,1) landMarks(iz,:)]];   % add observation noise randomly
