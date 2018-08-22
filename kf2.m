@@ -25,21 +25,21 @@ K=zeros(sz);         % Kalman增益
 % 估计的初始值
 xhat(1) = 0.0;
 P = 1.0;
-for k = 2:n_iter   %
+for k = 2:n_iter   %从第二个开始到结束
     % 时间更新过程
-    xhatminus(k) = xhat(k-1);
-    Pminus(k) = P(k-1)+Q;
+    xhatminus(k) = xhat(k-1);   %状态先验估计
+    Pminus(k) = P(k-1)+Q;   %先验方差估计
     
     % 测量更新过程
-    K(k) = Pminus(k)/( Pminus(k)+R );
-    xhat(k) = xhatminus(k)+K(k)*(z(k)-xhatminus(k));
-    P(k) = (1-K(k))*Pminus(k);
+    K(k) = Pminus(k)/( Pminus(k)+R );  %kalman gain update(translation)
+    xhat(k) = xhatminus(k)+K(k)*(z(k)-xhatminus(k));  %state function update
+    P(k) = (1-K(k))*Pminus(k);   %state x's covarience update
 end
  
-figure
-plot(t,z);
-hold on
+figure  %创建一个窗口
+plot(t,z,'b-');   %二维画图
+hold on   %旧图与新图共存
 plot(t,xhat,'r-')
 plot(t,x,'g-');
-legend('含有噪声的测量', '后验估计', '真值');
-xlabel('Iteration');
+legend('含有噪声的测量', '后验估计', '真值');   %在坐标区上添加图例
+xlabel('Iteration');   %为x轴添加标签,可设置属性

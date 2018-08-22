@@ -33,12 +33,12 @@ I=eye(n);             % 单位矩阵
 for k = 9:N           %假设车子已经运动9个delta_T了，我们才开始估计
     % 时间更新过程
     xhatminus(:,k) = A*xhat(:,k-1)+B*g;  %A(:,j)是A的第j列,下次的预测由上一次估计得到,
-    Pminus= A*P*A'+Q;  %预测值和真实值之间误差协方差预测 = 上次估计协方差+预测系统协方差
+    Pminus= A*P*A'+Q;  %状态估计的协方差预测由上次估计协方差+预测系统协方差
     
     % 测量更新过程
-    K = Pminus*H'*inv( H*Pminus*H'+R );   %更新kalman系数
+    K = Pminus*H'*inv( H*Pminus*H'+R );   更新kalman
     xhat(:,k) = xhatminus(:,k)+K*(z(k)-H*xhatminus(:,k));   %最终估计值=预测值+残差项
-    P = (I-K*H)*Pminus;      %更新状态估计协方差
+    P = (I-K*H)*Pminus;      %更新状态协方差
 end
  
 figure
